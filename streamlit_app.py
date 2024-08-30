@@ -18,6 +18,10 @@ else:
 
     # Create an OpenAI client.
     client = OpenAI(api_key=openai_api_key)
+    stream = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages="hello"
+            )
 
     # Let the user upload a file via `st.file_uploader`.
     uploaded_file = st.file_uploader(
@@ -44,7 +48,7 @@ else:
 
         # Generate an answer using the OpenAI API.
         stream = client.chat.completions.create(
-            model="gpt-4.0-mini",
+            model="gpt-4o-mini",
             messages=messages,
             stream=True,
         )
