@@ -18,10 +18,6 @@ st.write(
     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-
         # Create an OpenAI client.
 # Fetch the API key from Streamlit's secrets
 openai.api_key = st.secrets["openai_key"]
@@ -45,16 +41,20 @@ if uploaded_file and question:
             document = uploaded_file.read().decode()
             messages = [
                 {
+                    "role": "system",
+                    "content": "You are a very fancy british butler"},
+                    {
                     "role": "user",
                     "content": f"Here's a document: {document} \n\n---\n\n {question}",
-                }
-            ]
+                }               
+                ]
 
             # Generate an answer using the OpenAI API.
             stream = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
                 stream=True,
+                temperature=1
             )
 
             # Stream the response to the app using `st.write_stream`.
