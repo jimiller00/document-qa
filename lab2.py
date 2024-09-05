@@ -27,6 +27,12 @@ client = OpenAI(api_key=st.secrets["openai_key"])
 uploaded_file = st.file_uploader(
             "Upload a document (.txt or .md)", type=("txt", "md")
         )
+widget = st.radio("Choose a model to use:", ["4o", "4o mini"], disabled = not uploaded_file)
+
+if widget == "4o":
+    modelgpt = "gpt-4o"
+else:
+    modelgpt = "gpt-4o-mini"
 
         # Ask the user for a question via `st.text_area`.
 question = st.text_area(
@@ -35,24 +41,22 @@ question = st.text_area(
             disabled=not uploaded_file,
         )
 
-if uploaded_file and question:
-            
-            # Process the uploaded file and question.
-            document = uploaded_file.read().decode()
-            messages = [
-                    {
-                    "role": "user",
-                    "content": f"Here's a document: {document} \n\n---\n\n {question}",
-                }               
-                ]
-
-            # Generate an answer using the OpenAI API.
-            stream = client.chat.completions.create(
-                model="gpt-4o-mini",
+if uploaded_file and question:     
+# Process the uploaded file and question.
+    document = uploaded_file.read().decode()
+    messages = [
+       {
+        "role": "user",
+        "content": f"Here's a document: {document} \n\n---\n\n {question}",
+        }
+        ]
+# Generate an answer using the OpenAI API.
+    stream = client.chat.completions.create(
+                model=modelgpt,
                 messages=messages,
-                stream=True,
-                temperature=1
+                stream=True
             )
 
-            # Stream the response to the app using `st.write_stream`.
-            st.write_stream(stream)
+# Stream the response to the app using `st.write_stream`.
+if uploaded_file and question:   
+    st.write_stream(stream)
