@@ -1,5 +1,6 @@
 import streamlit as st
 import openai
+import chromadb
 from openai import OpenAI
 
 # Function to limit message history
@@ -7,6 +8,25 @@ def trim_message_history(messages, max_memory):
     if len(messages) > max_memory:
         return messages[-max_memory:]  # Keep only the most recent messages
     return messages
+
+def add_to_collection(collection, text, filename):
+    openai_client = st.session_state.embeddings.create(
+        input=text,
+        model="text-embedding-3-small"
+    )
+
+    embedding = response.data[0].embedding
+
+    collection.add(
+        documents=[text],
+        ids=[filename],
+        embeddings=[embedding]
+    )
+
+add_to_collection
+
+
+
 
  # Show title and description.
 st.title("John's Chat Bot")    
