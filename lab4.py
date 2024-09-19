@@ -23,7 +23,7 @@ def add_to_collection(collection, text, filename):
         embeddings=[embedding]
     )
 
-add_to_collection
+add_to_collection()
 
 
 

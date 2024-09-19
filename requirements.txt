@@ -1,4 +1,8 @@
 streamlit
 openai
+chromadbd
+pypdf
 python-dotenv
 mistralai
+pysqlite3-binary
+protobuf==3.20
