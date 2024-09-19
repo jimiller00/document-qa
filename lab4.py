@@ -1,7 +1,26 @@
 import streamlit as st
+import os
 import openai
-import chromadb
+from PyPDF2 import PdfReader
 from openai import OpenAI
+
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+import chromadb
+
+def read_pdf(pdf_file_path):
+    # Create a PDF reader object
+    reader = PdfReader(pdf_file_path)
+    
+    # Initialize an empty string to store the extracted text
+    extracted_text = ""
+    
+    # Loop through all pages in the PDF and extract text
+    for page in reader.pages:
+        extracted_text += page.extract_text()
+    
+    return extracted_text
 
 # Function to limit message history
 def trim_message_history(messages, max_memory):
@@ -23,7 +42,9 @@ def add_to_collection(collection, text, filename):
         embeddings=[embedding]
     )
 
-add_to_collection()
+
+
+add_to_collection("Lab4Collection", read_pdf("IST 644 Syllabus.pdf"), "IST 644 Syllabus.pdf")
 
 
 
