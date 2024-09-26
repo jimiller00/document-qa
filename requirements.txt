@@ -1,6 +1,6 @@
 streamlit
 openai
-chromadbd
+chromabd
 PyPDF2
 python-dotenv
 mistralai
