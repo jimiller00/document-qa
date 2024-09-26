@@ -13,14 +13,11 @@ from chromadb.config import Settings
 def read_pdf(pdf_file_path):
     # Create a PDF reader object
     reader = PdfReader(pdf_file_path)
-    
     # Initialize an empty string to store the extracted text
     extracted_text = ""
-    
     # Loop through all pages in the PDF and extract text
     for page in reader.pages:
         extracted_text += page.extract_text()
-    
     return extracted_text
 
 # Function to create the ChromaDB collection
@@ -38,9 +35,26 @@ def create_chromaDB_collection(collection, text, filename):
         embeddings=[embedding]
     )
 
-if 'client' not in st.session_state:
+# Initialize OpenAI client
+if 'openai_client' not in st.session_state:
     api_key = st.secrets["openai_key"]
-    st.session_state.client = OpenAI(api_key=api_key)
+    st.session_state.openai_client = OpenAI(api_key=api_key)
+
+if 'Lab4_vectorDB' not in st.session_state:
+    chroma_settings = Settings(
+        chroma_db_impl="duckdb+parquet",
+        persist_directory="./chroma_db"
+    )
+# Create or get the collection and store it in st.session_state.Lab4_vectorDB
+    st.session_state.Lab4_vectorDB = st.session_state.chroma_client.get_or_create_collection(name="pdf_collection")
+    st.session_state.chroma_client = chromadb.Client()
+
+else:
+    # Retrieve the existing collection from session state
+    collection = st.session_state.Lab4_vectorDB
+
+
+
 
 topic = st.sidebar.selectbox("Topic",('Generative AI', 'Text Mining', 'Data ScienceOverview'))
 
@@ -52,6 +66,7 @@ response = openai_client.embeddings.create(
 
 query_embedding = response.data[0].embedding
 
+collection = st.session_state.Lab4_vectorDB
 results = collection.query(
     query_embeddings=[query_embedding],
     n_results=3
