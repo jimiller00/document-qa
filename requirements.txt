@@ -1,8 +1,10 @@
 streamlit
 openai
 chromadbd
-pypdf3
+PyPDF2
 python-dotenv
 mistralai
 pysqlite3-binary
 protobuf==3.20
+sys
+chromadb.config
