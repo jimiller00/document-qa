@@ -4,6 +4,7 @@ import openai
 from PyPDF2 import PdfReader
 from openai import OpenAI
 
+
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
@@ -35,23 +36,25 @@ def create_chromaDB_collection(collection, text, filename):
         embeddings=[embedding]
     )
 
+
 # Initialize OpenAI client
 if 'openai_client' not in st.session_state:
     api_key = st.secrets["openai_key"]
     st.session_state.openai_client = OpenAI(api_key=api_key)
 
-if 'Lab4_vectorDB' not in st.session_state:
+if 'chroma_client' not in st.session_state:
     chroma_settings = Settings(
         chroma_db_impl="duckdb+parquet",
         persist_directory="./chroma_db"
     )
 # Create or get the collection and store it in st.session_state.Lab4_vectorDB
+    chroma_client = chromadb.Client(settings=chroma_settings)
     st.session_state.Lab4_vectorDB = st.session_state.chroma_client.get_or_create_collection(name="pdf_collection")
     st.session_state.chroma_client = chromadb.Client()
 
 else:
     # Retrieve the existing collection from session state
-    collection = st.session_state.Lab4_vectorDB
+    chroma_client = st.session_state.chroma_client
 
 
 
